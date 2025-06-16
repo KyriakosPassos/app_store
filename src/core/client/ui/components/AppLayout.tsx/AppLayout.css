@@ -1,0 +1,25 @@
+.AppWrapper {
+  overflow-x: hidden;
+  word-break: break-all;
+}
+
+.AppWrapperCollapsed {
+  max-width: 100vw;
+  animation: collapse 0.5s;
+}
+
+@keyframes collapse {
+  0% {
+    max-width: calc(100vw - 20px);
+  }
+  99% {
+    max-width: calc(100vw - 20px);
+  }
+  100% {
+    max-width: 100vw;
+  }
+}
+
+.AppWrapperExpanded {
+  max-width: calc(100vw - 20px);
+}

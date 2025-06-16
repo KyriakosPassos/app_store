@@ -1,0 +1,26 @@
+type LoginUserResult {
+  success: Boolean!
+  reason: String
+}
+
+type CurrentUser {
+  firstName: String!
+  lastName: String!
+  sAMAccountName: String!
+  email: String!
+}
+
+input LoginCredentials {
+  firstName: String!
+  lastName: String!
+}
+
+type Query {
+  someCoreResolver: String
+  getCurrentUser: CurrentUser
+}
+
+type Mutation {
+  loginUser(firstName: String!, lastName: String!): LoginUserResult
+  logoutUser: Boolean
+}

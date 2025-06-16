@@ -1,0 +1,18 @@
+body,
+html {
+  margin: 0;
+}
+
+.small-notification .ant-notification-notice-content {
+  width: fit-content !important;
+}
+
+.small-notification .ant-notification-notice-message {
+  font-size: 12px !important;
+  width: fit-content !important;
+}
+
+.small-notification .ant-notification-notice-description {
+  font-size: 10px !important;
+  width: fit-content !important;
+}

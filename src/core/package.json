@@ -1,0 +1,25 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "scripts": {
+    "start:client": "vite",
+    "start:server": "ts-node ./server/index.ts",
+    "debug:server": "ts-node-dev --respawn --transpile-only --inspect=9290 --enable-source-maps -r source-map-support/register --watch \"./server, ../apps/*/server\"  server/index.ts "
+  },
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@graphql-tools/merge": "^9.0.24",
+    "fastify": "^5.2.1",
+    "graphql": "^16.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  }
+}

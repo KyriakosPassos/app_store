@@ -1,0 +1,4 @@
+type Query {
+  getFromApp1: String
+  getWithArgumentsFromApp1(text: String!): String
+}
