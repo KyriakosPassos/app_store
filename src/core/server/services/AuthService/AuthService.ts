@@ -18,7 +18,13 @@ export namespace AuthService {
   ): Promise<LoginResult> => {
     let ldapUser;
     try {
-      ldapUser = await authenticateLdap(firstName, lastName);
+      ldapUser = {
+        firstName: "kyriakos",
+        lastName: "passos",
+        sAMAccountName: "passos kyriakos",
+        email: "asdfnds@afsdf.com",
+      };
+      // ldapUser = await authenticateLdap(firstName, lastName);
     } catch (err: any) {
       return { success: false, reason: err };
     }

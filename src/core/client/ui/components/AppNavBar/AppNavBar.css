@@ -1,8 +1,8 @@
 .AppNavBar {
-  width: 20px;
+  width: 2rem;
   position: fixed;
   border-right: 1px solid #ccc;
-  right: 0%;
+  left: 0%;
   flex-direction: column;
   height: 100vh;
   background-color: #9f9f9f;
@@ -55,7 +55,7 @@
 }
 
 .appIcons {
-  padding-bottom: 0.2rem;
+  margin-bottom: 1rem;
 }
 
 .expand-collapse-icons {

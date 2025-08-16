@@ -1,5 +1,6 @@
 import React from "react";
 import { AppPagesStructure, AppStructure } from "@core/shared/types";
+import { FaChalkboardTeacher } from "react-icons/fa";
 import { FaHome, FaHourglass, FaHockeyPuck } from "react-icons/fa";
 
 const pages: AppPagesStructure[] = [
@@ -8,7 +9,7 @@ const pages: AppPagesStructure[] = [
     icon: FaHome,
     priority: 0,
     route: "homePage",
-    component: React.lazy(() => import("./App1HomePage")),
+    component: React.lazy(() => import("./BoardHomePage")),
   },
   {
     name: "Other Page 1",
@@ -20,8 +21,8 @@ const pages: AppPagesStructure[] = [
 ];
 
 const App: AppStructure = {
-  app: "App1",
-  appIcon: FaHourglass,
+  app: "Board",
+  appIcon: FaChalkboardTeacher,
   pages: pages,
 } as const;
 

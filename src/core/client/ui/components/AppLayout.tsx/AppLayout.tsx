@@ -17,9 +17,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ apps }) => {
     return currentApp?.pages.map((page) => (
       <Route
         key={`/${page.route}`}
-        path={`/${page.route}`}
+        path={`/${page.route}/*`}
         element={
-          <div id={page.route} key={page.route} className="AppWrapperExpanded">
+          <div id={page.route} key={page.route} className="AppWrapper">
             <page.component />
           </div>
         }

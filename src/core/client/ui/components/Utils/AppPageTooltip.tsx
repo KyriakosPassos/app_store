@@ -13,7 +13,7 @@ const AppPageTooltip = (props: IProps) => {
       arrow={false}
       placement="right"
       styles={{
-        body: { fontSize: "8px", padding: "2px", minHeight: "5px" },
+        body: { fontSize: "1rem", padding: "2px", minHeight: "5px" },
       }}
     >
       {props.children}

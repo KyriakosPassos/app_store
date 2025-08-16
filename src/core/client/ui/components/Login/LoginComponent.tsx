@@ -1,13 +1,16 @@
 import React from "react";
 import { Form, Input, Button, notification } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../authentication/AuthenticationContext";
 
 export const Login: React.FC = () => {
   const { signin, user, loginUserLoading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   const [form] = Form.useForm();
-  if (user) navigate("/");
+  if (user) navigate(from, { replace: true });
+
   const onFinish = async (values: { username: string; password: string }) => {
     const result = await signin(values.username, values.password);
     if (result.success) navigate("/");

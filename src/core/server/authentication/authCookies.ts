@@ -1,5 +1,6 @@
 import { FastifyReply } from "fastify";
-import { TokenPayload, signAccessToken, signRefreshToken } from "./auth";
+import { signAccessToken, signRefreshToken } from "./auth";
+import { LdapUser } from "./ldap";
 
 const ACCESS_TOKEN_COOKIE = "accessToken";
 const REFRESH_TOKEN_COOKIE = "refreshToken";
@@ -10,7 +11,7 @@ const COOKIE_OPTIONS = {
   sameSite: "lax",
 } as const;
 
-export const setAuthCookies = (reply: FastifyReply, payload: TokenPayload) => {
+export const setAuthCookies = (reply: FastifyReply, payload: LdapUser) => {
   setAccessCookie(reply, payload);
 
   const refreshToken = signRefreshToken(payload);
@@ -20,7 +21,7 @@ export const setAuthCookies = (reply: FastifyReply, payload: TokenPayload) => {
   });
 };
 
-export const setAccessCookie = (reply: FastifyReply, payload: TokenPayload) => {
+export const setAccessCookie = (reply: FastifyReply, payload: LdapUser) => {
   const accessToken = signAccessToken(payload);
   reply.setCookie(ACCESS_TOKEN_COOKIE, accessToken, {
     ...COOKIE_OPTIONS,

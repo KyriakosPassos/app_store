@@ -31,12 +31,12 @@ const AppNavBar = (props: NavBarProps) => {
   return (
     <>
       <nav className={`AppNavBar ${isCollapsed ? "collapsed" : "open"}`}>
-        <AppPageTooltip title="Collapse">
+        {/* <AppPageTooltip title="Collapse">
           <AiFillCaretRight
             className="expand-collapse-icons"
             onClick={changeMountedAppPageClassName}
           />
-        </AppPageTooltip>
+        </AppPageTooltip> */}
         {props.app.pages.map((page) => (
           <NavLink
             onClick={() => setCurrentSelected(page.route)}
@@ -47,13 +47,13 @@ const AppNavBar = (props: NavBarProps) => {
             }`}
           >
             <AppPageTooltip title={page.name}>
-              <page.icon size={14} className="appIcons" />
+              <page.icon size={30} className="appIcons" />
             </AppPageTooltip>
           </NavLink>
         ))}
         <NavLink to={`/`} className="navLinks">
           <AppPageTooltip title="App Collection">
-            <FaUndoAlt size={14} />
+            <FaUndoAlt size={30} />
           </AppPageTooltip>
         </NavLink>
         <div
@@ -62,19 +62,19 @@ const AppNavBar = (props: NavBarProps) => {
           onClick={() => signout()}
         >
           <AppPageTooltip title="Logout">
-            <AiOutlineLogout size={14} />
+            <AiOutlineLogout size={30} />
           </AppPageTooltip>
         </div>
       </nav>
 
-      <AppPageTooltip title="Expand">
+      {/* <AppPageTooltip title="Expand">
         <AiFillCaretLeft
           className={`expand-collapse-icons ${
             !isCollapsed ? "hideExpandIcon" : "showExpandIcon"
           }`}
           onClick={changeMountedAppPageClassName}
         />
-      </AppPageTooltip>
+      </AppPageTooltip> */}
     </>
   );
 };

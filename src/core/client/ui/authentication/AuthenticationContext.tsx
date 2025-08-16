@@ -29,15 +29,18 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProviderMain = ({ children }: { children: ReactNode }) => {
-  const { data, refetch: getCurrentUser } = useGetCurrentUserQuery({
-    fetchPolicy: "no-cache",
+  const {
+    data: user,
+    loading,
+    refetch: getCurrentUser,
+  } = useGetCurrentUserQuery({
+    fetchPolicy: "cache-first",
   });
   const [loginUser, { loading: loginUserLoading }] = useLoginUserMutation();
 
   // logout mutation
   const [logoutUser] = useLogoutUserMutation();
-  const user = data ?? null;
-
+  if (loading) return <>Fetching user</>;
   const signin = async (
     firstName: string,
     lastName: string
@@ -55,7 +58,9 @@ export const AuthProviderMain = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loginUserLoading, signin, signout }}>
+    <AuthContext.Provider
+      value={{ user: user ?? null, loginUserLoading, signin, signout }}
+    >
       {children}
     </AuthContext.Provider>
   );
