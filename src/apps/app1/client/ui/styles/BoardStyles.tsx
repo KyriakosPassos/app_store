@@ -164,7 +164,6 @@ const Styles = ({ darkMode }: { darkMode: boolean }) => (
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      width:15rem;
     }
 
     /* Ticket Styles */
@@ -174,6 +173,7 @@ const Styles = ({ darkMode }: { darkMode: boolean }) => (
       border-radius: 0.5rem;
       box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+      // min-height:10rem;
     }
 
     .ticket:hover {
