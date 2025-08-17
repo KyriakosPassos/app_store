@@ -1,4 +1,17 @@
+type Board {
+  id: ID!
+  name: String!
+  created_at: String
+}
+
 type Query {
-  getFromApp1: String
-  getWithArgumentsFromApp1(text: String!): String
+  getFromKanbanBoard: String
+}
+
+input CreateBoardInput {
+  name: String!
+}
+
+type Mutation {
+  createBoard(input: CreateBoardInput!): Board
 }

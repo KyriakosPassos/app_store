@@ -4,7 +4,8 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import SprintBoard from "../components/SprintPage/SprintBoard/SprintBoard";
 import { TicketType } from "../components/SprintPage/Ticket/Ticket";
 import TicketDetailsPage from "../components/SprintPage/TicketDetails/TicketDetailsPage";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
+import { notification } from "antd";
 
 export const objectTickets: Record<string, TicketType> = {
   "T-109": {
@@ -36,69 +37,6 @@ export const objectTickets: Record<string, TicketType> = {
     columnId: "inProgressId",
   },
   "T-104": {
-    id: "T-104",
-    title: "Design the main dashboard UI",
-    status: "In Progress",
-    description: "Sigoura Gamath?",
-    columnId: "inProgressId",
-  },
-  "T-110": {
-    id: "T-102",
-    title: "Define database schema",
-    status: "To Do",
-    description: "Sigoura Gamath?",
-    columnId: "toDoId",
-  },
-  "T-111": {
-    id: "T-103",
-    title: "Develop user authentication API",
-    status: "In Progress",
-    description: "Sigoura Gamath?",
-    columnId: "inProgressId",
-  },
-  "T-112": {
-    id: "T-104",
-    title: "Design the main dashboard UI",
-    status: "In Progress",
-    description: "Sigoura Gamath?",
-    columnId: "inProgressId",
-  },
-  "T-113": {
-    id: "T-102",
-    title: "Define database schema",
-    status: "To Do",
-    description: "Sigoura Gamath?",
-    columnId: "toDoId",
-  },
-  "T-114": {
-    id: "T-103",
-    title: "Develop user authentication API",
-    status: "In Progress",
-    description: "Sigoura Gamath?",
-    columnId: "inProgressId",
-  },
-  "T-115": {
-    id: "T-104",
-    title: "Design the main dashboard UI",
-    status: "In Progress",
-    description: "Sigoura Gamath?",
-    columnId: "inProgressId",
-  },
-  "T-116": {
-    id: "T-102",
-    title: "Define database schema",
-    status: "To Do",
-    description: "Sigoura Gamath?",
-    columnId: "toDoId",
-  },
-  "T-117": {
-    id: "T-103",
-    title: "Develop user authentication API",
-    status: "In Progress",
-    description: "Sigoura Gamath?",
-    columnId: "inProgressId",
-  },
-  "T-118": {
     id: "T-104",
     title: "Design the main dashboard UI",
     status: "In Progress",
@@ -176,15 +114,42 @@ const initialBoardData: BoardColumnType[] = columns.map((column) => ({
   tickets: ticketsByColumnId[column._id] || [],
 }));
 
-const getFromApp1 = gql`
-  query getFromApp1 {
-    getFromApp1
+const CREATE_BOARD_MUTATION = gql`
+  mutation CreateBoard($input: CreateBoardInput!) {
+    createBoard(input: $input) {
+      id
+      name
+      created_at
+    }
   }
 `;
 
 const BoardHomePage = () => {
-  const { data } = useQuery(getFromApp1);
-  console.log(data);
+  const [createBoard] = useMutation(CREATE_BOARD_MUTATION, {
+    onCompleted: (data) => {
+      notification.success({
+        message: "Board Created!",
+        description: `Successfully created board: ${data.createBoard.name}`,
+      });
+    },
+    onError: (error) => {
+      notification.error({
+        message: "Creation Failed",
+        description: error.message,
+      });
+    },
+  });
+
+  const handleCreateBoard = (values: { boardName: string }) => {
+    createBoard({
+      variables: {
+        input: {
+          name: values.boardName,
+        },
+      },
+    });
+  };
+
   const [darkMode, setDarkMode] = React.useState<boolean>(true);
   const location = useLocation();
   console.log(location);

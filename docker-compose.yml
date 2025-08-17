@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:15 # Use a specific, stable version of Postgres
+    container_name: app_store_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      # This maps the port from your .env file to the container's port
+      - "${DB_PORT}:5432"
+    volumes:
+      # This creates a persistent volume to save your data
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
