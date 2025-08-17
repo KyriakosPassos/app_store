@@ -66,8 +66,14 @@ export const AuthProviderMain = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => (
-  <AppApolloWrapper>
+export const AuthProvider = ({
+  children,
+  appName,
+}: {
+  children: ReactNode;
+  appName?: string;
+}) => (
+  <AppApolloWrapper appName={appName}>
     <AuthProviderMain>{children}</AuthProviderMain>
   </AppApolloWrapper>
 );

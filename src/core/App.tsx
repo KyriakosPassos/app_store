@@ -33,32 +33,32 @@ const App = () => {
   }, []);
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <React.Suspense fallback={<div>Loading pages...</div>}>
-          <Routes>
-            {/* public route */}
-            <Route path="/login" element={<LoginComponent />} />
-            <Route
-              path="/"
-              element={
+    <BrowserRouter>
+      <React.Suspense fallback={<div>Loading pages...</div>}>
+        <Routes>
+          {/* public route */}
+          <Route
+            path="/login"
+            element={
+              <AuthProvider>
+                <LoginComponent />
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <AuthProvider>
                 <RequireAuth>
                   <CoreHomePage apps={apps} key="coreRoute" />
                 </RequireAuth>
-              }
-            />
-            <Route
-              path="/:appId/*"
-              element={
-                <RequireAuth>
-                  <AppLayout apps={apps} />
-                </RequireAuth>
-              }
-            />
-          </Routes>
-        </React.Suspense>
-      </BrowserRouter>
-    </AuthProvider>
+              </AuthProvider>
+            }
+          />
+          <Route path="/:appId/*" element={<AppLayout apps={apps} />} />
+        </Routes>
+      </React.Suspense>
+    </BrowserRouter>
   );
 };
 

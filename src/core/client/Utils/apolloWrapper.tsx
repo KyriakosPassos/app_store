@@ -11,6 +11,7 @@ const AppApolloWrapper = (props: AppApolloWrapperProps) => {
   // Create a client specific for this app using cache in case it was already created previously
   const client = React.useMemo(() => {
     const clientFactory = ApolloClientFactory.getInstance();
+    console.log("created client for", props.appName ?? "core");
     return clientFactory.getClient(props.appName);
   }, [props.appName]);
 

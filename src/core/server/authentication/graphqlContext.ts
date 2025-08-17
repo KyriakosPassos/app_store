@@ -1,33 +1,35 @@
-import type { ApolloFastifyContextFunction } from "@as-integrations/fastify";
+import type { FastifyRequest, FastifyReply } from "fastify";
 import type { BaseContext } from "@apollo/server";
 import { LdapUser } from "./ldap";
 
 export interface AppContext extends BaseContext {
-  readonly user?: LdapUser | undefined;
+  user?: LdapUser | undefined;
 }
-
-type CoreCtxFn = ApolloFastifyContextFunction<CoreContext>;
-type CoreRequest = Parameters<CoreCtxFn>[0];
-type CoreReply = Parameters<CoreCtxFn>[1];
 
 export interface CoreContext extends BaseContext {
   user?: LdapUser | undefined;
-  request: Partial<CoreRequest>;
-  reply: CoreReply;
+  request: FastifyRequest;
+  reply: FastifyReply;
 }
 
-export const buildContextForCore: ApolloFastifyContextFunction<
-  CoreContext
-> = async (request, reply) => {
+// This is our new, conditional context builder.
+// It returns a union type, promising one of the two context shapes.
+export const buildContext = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+): Promise<CoreContext | AppContext> => {
+  // Check if the request is for the app GraphQL endpoint. Build and return the limited AppContext.
+  const a = request.url;
+  if (request.url.includes("/graphql/")) {
+    return {
+      user: (request as any).user,
+    };
+  }
+
+  // Otherwise, it's a core request.
   return {
-    request: request,
+    request,
     reply,
     user: (request as any).user,
   };
-};
-
-export const buildContextForApp: ApolloFastifyContextFunction<
-  AppContext
-> = async (request, _) => {
-  return { user: (request as any).user };
 };

@@ -15,6 +15,8 @@ import { onError } from "@apollo/client/link/error";
 import { NetworkError } from "@apollo/client/errors";
 import { notification } from "antd";
 
+const baseUri = import.meta.env.VITE_API_BASE_URL;
+
 const isServerError = (element: NetworkError): element is ServerError => {
   return element!.name === "ServerError";
 };
@@ -56,8 +58,8 @@ export class ApolloClientFactory {
     // Determine the GraphQL endpoint based on the appName.
     // If appName is provided, use `/graphql/{appName}`, otherwise use the core endpoint.
     const uri = appName
-      ? `http://localhost:9229/graphql/${appName.toLocaleLowerCase()}`
-      : "http://localhost:9229/graphql";
+      ? `${baseUri}/graphql/${appName}`
+      : `${baseUri}/graphql`;
 
     // Create an HttpLink that points to your GraphQL endpoint.
     const httpLink = new HttpLink({ uri, credentials: "include" });

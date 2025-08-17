@@ -9,15 +9,13 @@ import { mergeTypeDefs, mergeResolvers } from "@graphql-tools/merge";
 import { fastifyCors } from "@fastify/cors";
 import fastifyCookie from "@fastify/cookie";
 import { tokenMiddleWare } from "./authentication/tokenMiddleWare";
-import {
-  buildContextForApp,
-  buildContextForCore,
-} from "./authentication/graphqlContext";
+import { buildContext } from "./authentication/graphqlContext";
 
 const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../../../.env") });
 
 let coreResolvers: any[] = [];
-let coreSchema = "";
+let coreSchemas: any[] = [];
 
 //  Loads all resolver modules from a directory.
 //  Each file should export an object (either as default or named export).
@@ -41,24 +39,30 @@ const loadResolversFromDir = (directory: string): any[] => {
 };
 
 // Reads a GraphQL schema from a file.
-const loadSchemaFromFile = (filePath: string): string => {
-  if (existsSync(filePath)) {
-    return readFileSync(filePath, "utf8");
+const loadSchemasFromDir = (directory: string): any[] => {
+  const schemasArray: any[] = [];
+  if (!existsSync(directory)) return schemasArray;
+  const files = readdirSync(directory);
+  for (const file of files) {
+    const fullPath = path.join(directory, file);
+    if (statSync(fullPath).isFile() && file.endsWith(".graphql")) {
+      schemasArray.push(readFileSync(fullPath, "utf8"));
+    }
   }
-  return "";
+  return schemasArray;
 };
 
 // Creates an Apollo Server instance for the Core API.
 const createCoreApolloServer = async <T extends RawServerBase>(
   fastify: FastifyInstance<T>
 ): Promise<ApolloServer<BaseContext>> => {
-  const coreSchemaPath = path.join(__dirname, "graphql", "core.schema.graphql");
-  const coreTypeDefs = loadSchemaFromFile(coreSchemaPath);
-  coreSchema = coreTypeDefs;
+  const coreSchemaDir = path.join(__dirname, "graphql");
+  const coreTypeDefs = loadSchemasFromDir(coreSchemaDir);
+  coreSchemas = coreTypeDefs;
   const coreResolversDir = path.join(__dirname, "resolvers");
   const coreResolversArray = loadResolversFromDir(coreResolversDir);
   coreResolvers = coreResolversArray;
-  const mergedTypeDefs = mergeTypeDefs([coreTypeDefs]);
+  const mergedTypeDefs = mergeTypeDefs(coreTypeDefs);
   const mergedResolvers = mergeResolvers(coreResolversArray);
 
   const apolloServer = new ApolloServer<BaseContext>({
@@ -73,23 +77,17 @@ const createCoreApolloServer = async <T extends RawServerBase>(
 // Creates an Apollo Server instance for an app by merging its schema/resolvers with the core’s.
 const createAppApolloServer = async <T extends RawServerBase>(
   appDir: string,
-  appName: string,
   fastify: FastifyInstance<T>
 ): Promise<ApolloServer<BaseContext>> => {
   // Load app-specific schema/resolvers
-  const appSchemaPath = path.join(
-    appDir,
-    "server",
-    "graphql",
-    `${appName}.schema.graphql`
-  );
-  const appTypeDefs = loadSchemaFromFile(appSchemaPath);
+  const appSchemaDir = path.join(appDir, "server", "graphql");
+  const appTypeDefs = loadSchemasFromDir(appSchemaDir);
   const appResolversDir = path.join(appDir, "server", "resolvers");
   const appResolversArray = loadResolversFromDir(appResolversDir);
 
   // Merge core and app definitions
   const mergedTypeDefs = mergeTypeDefs(
-    [coreSchema, appTypeDefs].filter(Boolean)
+    [coreSchemas, appTypeDefs].filter(Boolean)
   );
   const mergedResolvers = mergeResolvers([
     ...coreResolvers,
@@ -111,17 +109,14 @@ const registerApolloToFastify = <T extends RawServerBase>(
   apolloServer: ApolloServer<BaseContext>,
   path?: string
 ) => {
-  const handler = !path
-    ? fastifyApolloHandler(apolloServer, {
-        context: buildContextForCore,
-      })
-    : (fastifyApolloHandler(apolloServer, {
-        context: buildContextForApp,
-      }) as any);
+  const handler = fastifyApolloHandler(apolloServer, {
+    context: buildContext,
+  });
+
   fastify.route({
     method: ["GET", "POST", "OPTIONS"],
     url: `${path ? `/graphql/${path}` : "/graphql"}`,
-    handler,
+    handler: handler as any,
   });
 };
 
@@ -134,7 +129,7 @@ const startServer = async () => {
     credentials: true,
   });
   fastify.register(fastifyCookie, {
-    secret: "fastifyCookieSecret",
+    secret: process.env.COOKIE_SECRET,
     parseOptions: {},
   });
   fastify.addHook("preValidation", tokenMiddleWare);
@@ -151,11 +146,7 @@ const startServer = async () => {
     });
     for (const appName of appFolders) {
       const appDir = path.join(appsFolder, appName);
-      const appApolloServer = await createAppApolloServer(
-        appDir,
-        appName,
-        fastify
-      );
+      const appApolloServer = await createAppApolloServer(appDir, fastify);
       // Register each app's Apollo Server at /graphql/<appName>
       registerApolloToFastify(fastify, appApolloServer, appName);
     }
@@ -164,10 +155,12 @@ const startServer = async () => {
   try {
     await fastify.listen({
       port: process.env.PORT ? parseInt(process.env.PORT) : 9229,
-      host: "0.0.0.0",
+      host: process.env.HOST || "0.0.0.0",
     });
     fastify.log.info(`NIAOU`);
-    fastify.log.info(`Server running at http://0.0.0.0:9229`);
+    fastify.log.info(
+      `Server running at http://${process.env.HOST}:${process.env.PORT}`
+    );
     fastify.log.info(`Core endpoint: http://localhost:9229/graphql`);
   } catch (err) {
     fastify.log.error(err);

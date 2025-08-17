@@ -19,6 +19,9 @@ export const tokenMiddleWare = async (
     const userInfo = verifyAccessToken(accessToken);
     if (userInfo) {
       addUserToContext(request, userInfo);
+      const a = request.headers;
+      const b = request.host;
+      const c = request.hostname;
       return;
     }
     return reply.status(401).send({

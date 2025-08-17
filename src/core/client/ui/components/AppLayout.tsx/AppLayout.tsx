@@ -2,8 +2,9 @@ import React from "react";
 import { Route, Routes, useParams } from "react-router-dom";
 import AppNavBar from "../AppNavBar/AppNavBar";
 import { AppStructure } from "../../../../shared/types";
-import AppApolloWrapper from "../../../Utils/apolloWrapper";
 import "./AppLayout.css";
+import { AuthProvider } from "../../authentication/AuthenticationContext";
+import AppApolloWrapper from "core/client/Utils/apolloWrapper";
 
 interface AppLayoutProps {
   apps: Map<string, AppStructure>;
@@ -30,10 +31,14 @@ const AppLayout: React.FC<AppLayoutProps> = ({ apps }) => {
   if (!currentApp) return <div>App not found.</div>;
 
   return (
-    <AppApolloWrapper appName={currentApp.app}>
-      <AppNavBar app={currentApp} />
-      <Routes>{pagesRoutes}</Routes>
-    </AppApolloWrapper>
+    <>
+      <AuthProvider>
+        <AppNavBar app={currentApp} />
+      </AuthProvider>
+      <AuthProvider appName={currentApp.app}>
+        <Routes>{pagesRoutes}</Routes>
+      </AuthProvider>
+    </>
   );
 };
 

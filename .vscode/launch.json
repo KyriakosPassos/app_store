@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Node",
+      "type": "node",
+      "request": "attach",
+      "port": 9290,
+      "skipFiles": ["<node_internals>/**", "<node_modules>/**"],
+      "restart": true,
+      "sourceMaps": true
+    }
+  ]
+}

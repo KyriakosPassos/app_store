@@ -20,7 +20,7 @@ const pages: AppPagesStructure[] = [
 ] as const;
 
 const App: AppStructure = {
-  app: "App2",
+  app: "app2",
   appIcon: FaIndustry,
   pages: pages,
 } as const;

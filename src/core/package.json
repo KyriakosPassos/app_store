@@ -2,7 +2,7 @@
   "name": "core",
   "version": "1.0.0",
   "scripts": {
-    "start:client": "vite",
+    "start:client": "vite --config ../../vite.config.ts",
     "start:server": "ts-node ./server/index.ts",
     "debug:server": "ts-node-dev --respawn --transpile-only --inspect=9290 --enable-source-maps -r source-map-support/register --watch \"./server, ../apps/*/server\"  server/index.ts "
   },
@@ -14,7 +14,7 @@
   "type": "commonjs",
   "dependencies": {
     "@graphql-tools/merge": "^9.0.24",
-    "fastify": "^5.2.1",
+    "fastify": "^5.2.2",
     "graphql": "^16.10.0"
   },
   "devDependencies": {
